@@ -6,6 +6,7 @@
 #include <optional>
 #include <queue>
 #include <chrono>
+#include <thread>
 #include <cstdint>
 #include <condition_variable>
 #include <asio.hpp>
