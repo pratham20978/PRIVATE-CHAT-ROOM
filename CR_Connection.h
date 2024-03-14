@@ -35,7 +35,7 @@ namespace olc
                 TSQueue<Message>& qIn, uint16_t port, asio::ip::tcp::resolver::results_type endpoint ):
                 m_asioContext(asioContext), m_socket(move(socket)),QMessageIn(qIn), 
                 m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
-                m_endpoint(endpoint);
+                m_endpoint(endpoint)
                 {
                     // Starting to connect to client
                     m_asioContext.run();
