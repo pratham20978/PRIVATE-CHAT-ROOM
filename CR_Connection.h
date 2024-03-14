@@ -28,10 +28,14 @@ namespace olc
 
                 Message m_msgTemporaryIn;
 
+                asio::ip::tcp::resolver::results_type m_endpoint;
+
             public:
                 Connection(asio::io_context asioContext, asio::ip::tcp::socket socket,
-                TSQueue<Message>& qIn, uint16_t port): m_asioContext(asioContext), m_socket(move(socket)),
-                QMessageIn(qIn), m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port))
+                TSQueue<Message>& qIn, uint16_t port, asio::ip::tcp::resolver::results_type endpoint ):
+                m_asioContext(asioContext), m_socket(move(socket)),QMessageIn(qIn), 
+                m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(),port)),
+                m_endpoint(endpoint);
                 {
                     // Starting to connect to client
                     m_asioContext.run();
@@ -40,7 +44,7 @@ namespace olc
                             try{
                                 if(IsConnected()){
                                     WaitForClientConnection();
-                                    ConnectToClient();
+                                    ConnectToClient(m_endpoint);
                                 }
                                 this_thread::sleep_for(chrono::seconds(1));
                             }
