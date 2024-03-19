@@ -131,7 +131,7 @@ int main(){
         // Check for user input and send message
         while(!client.IncomingQueueEmpty()){
             // Get and display incoming message
-            olc::net::Message incomingMsg = client.MessageGive();
+            olc::net::Message incomingMsg = client.MessageGi2ve();
             cout<<"Recived Message from "<< incomingMsg.READ_HDR()<<": "<< incomingMsg.READ_MSG() << endl;
 
         }

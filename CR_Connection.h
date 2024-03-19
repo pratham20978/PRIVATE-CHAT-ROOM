@@ -30,6 +30,13 @@ namespace olc
 
                 asio::ip::tcp::resolver::results_type m_endpoint;
 
+            // private:
+            //     // serialze msg to write 
+            //     string serilizeMsgwrite;
+
+            //     // serialze msg to read
+            //     string serilizeMsgread;
+
             public:
                 Connection(asio::io_context& asioContext, asio::ip::tcp::socket socket,
                 TSQueue<Message>& qIn, uint16_t port, asio::ip::tcp::resolver::results_type endpoint):
@@ -40,6 +47,7 @@ namespace olc
                     // Starting to connect to client
                     m_asioContext.run();
                     m_threadContext = thread([this](){
+                        cout<<"[SERVER] Started!"<<endl;
                         while(true){
                             try{
                                 if(IsConnected()){
@@ -54,7 +62,7 @@ namespace olc
                                 cerr<<"[SERVER] Exception: "<<ec.what()<<endl;
                                 break;
                             }
-                            cout<<"[SERVER] Started!"<<endl;
+                            
                         }
                     }); 
                     
@@ -111,13 +119,17 @@ namespace olc
                 });
             }
 
-            private:
+            // Read and Write Msg Part
             void ReadMessage(){
-
-                async_read(m_socket, asio::buffer(&m_msgTemporaryIn,sizeof(Message)),
-                [this](error_code ec,size_t length){
+                char buffer[1024];
+                async_read(m_socket, asio::buffer(buffer,sizeof(buffer)),
+                [this,buffer](error_code ec,size_t length){
                     if(!ec){
-                        AddToIncomingQueue();
+                        Message recivedMsg;
+                        string data(buffer,buffer+length);
+                        recivedMsg.DeserilizeMsg(data);
+                        m_msgTemporaryIn=recivedMsg;
+                        AddToIncomingQueue(recivedMsg);
                     }else{
                         cout<<"["<<m_msgTemporaryIn.getUserID()<<"] Read Msg Fail"<<endl;
                         m_socket.close();
@@ -129,7 +141,7 @@ namespace olc
             
             void WriteMessage(){
 
-                async_write(m_socket, asio::buffer(QMessageOut.get().data(),QMessageOut.get().size()),
+                async_write(m_socket, asio::buffer(QMessageOut.get().SerilizeMsg()),
                 [this](error_code ec,size_t length){
                     if(!ec){
                         QMessageOut.pop();
@@ -145,8 +157,8 @@ namespace olc
 
             }
 
-            void AddToIncomingQueue(){
-                QMessageIn.push(m_msgTemporaryIn);
+            void AddToIncomingQueue(Message& mmsg){
+                QMessageIn.push(mmsg);
 
                 ReadMessage();
             }
