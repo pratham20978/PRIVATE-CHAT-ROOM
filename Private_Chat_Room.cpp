@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include "Header_Files.h"
 #include "CR_Message.h"
@@ -65,7 +64,7 @@ void Register(){
     cout<<"Enter Password: ";
     cin>>password;
 
-    if(!CheckIfUserExists(username,password)){
+    if(!Check_If_User_Exists(username,password)){
         Save_Creadentials_To_File(username,password);
     }
 }
@@ -82,6 +81,8 @@ int main(){
     uint16_t port = 60000;
 
     bool loggedIn = false; // Flag to trace login status;
+
+    string UserName;
 
 
     // Manage Login Page
@@ -104,6 +105,7 @@ int main(){
                 if (Authenticate(username, password)) {
                     cout << "Login successful!" << endl;
                     loggedIn = true;
+                    UserName = username;
                 } else {
                     cout << "Invalid username or password. Please try again." << endl;
                 }
@@ -118,9 +120,35 @@ int main(){
     }
 
     // Proceed with connecting only after succesful login
-    if(loggedIn && !client.connect(UserIP,port)){
+    if(loggedIn && !client.Connect(UserIP,port)){
         cerr <<"Failed To Connect to Other User. "<<endl;
         return 1;
+    }
+
+    // Manage Message Transfer
+    // Real-time message interaction
+    while(true){
+        // Check for user input and send message
+        while(!client.IncomingQueueEmpty()){
+            // Get and display incoming message
+            olc::net::Message incomingMsg = client.MessageGive();
+            cout<<"Recived Message from "<< incomingMsg.READ_HDR()<<": "<< incomingMsg.READ_MSG() << endl;
+
+        }
+
+        // Check for user input and send messaage
+        string userMessage;
+        cout << "Enter Your message (type 'exit' to quit): ";
+        cin.ignore(); // Ignore newLine charter left in buffr
+        getline(cin, userMessage);
+
+        if(userMessage == "exit"){
+            break; // Exit loop if user type 'exit'
+        } 
+
+        // Send message to the other user
+        olc::net::Message msg(UserName,userMessage);
+        client.MessageSend(msg);
     }
 
     return 0;

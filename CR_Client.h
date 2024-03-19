@@ -5,6 +5,7 @@
 #include "CR_Connection.h"
 
 using namespace std;
+//using namespace olc::net;
 
 namespace olc
 {
@@ -53,7 +54,8 @@ namespace olc
                         m_context,
                         asio::ip::tcp::socket(m_context),
                         m_qMessageIn,
-                        port
+                        port,
+                        endpoint
                     ); // Todof
 
                     // Start Context thread
@@ -97,9 +99,14 @@ namespace olc
             }
 
             Message MessageGive(){
-                m_msgIn = m_qMessageIn.get();
-                m_qMessageIn.pop();
-                return m_msgIn;
+                return m_qMessageIn.pop();
+            }
+
+            bool IncomingQueueEmpty(){
+                if(m_qMessageIn.empty()){
+                    return true;
+                }
+                return false;
             }
         };
     }

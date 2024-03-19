@@ -1,10 +1,10 @@
 # Private Chat Room
 
-Private Chat Room is a C++ project that implements a secure private chat room network for client-to-client communication. This README provides an overview of the project structure and key components.
+Private Chat Room is a C++ project that implements a secure private chat room network for client-to-client communication. This README provides an overview of the project structure, key components, and its functionality.
 
 ## Overview
 
-The Private Chat Room project aims to provide a secure and efficient platform for users to communicate privately over a network. It utilizes modern C++ features and libraries to implement key functionality such as message encryption, message queues, and network connections.
+The Private Chat Room project aims to provide a secure and efficient platform for users to communicate privately over a network. It utilizes modern C++ features and libraries to implement key functionality such as message encryption, message queues, and network connections. The project is designed to be modular and extensible, allowing developers to integrate it into their applications with ease.
 
 ## Components
 
@@ -36,6 +36,24 @@ CR_Connection.h defines the Connection class, which represents a network connect
 - Asynchronous connection to clients using Boost.Asio library.
 - Sending and receiving messages asynchronously.
 - Integration with message queues for efficient message handling.
+
+## Functionality
+
+### Secure Communication
+- Messages exchanged between clients are encrypted using AES encryption with CBC mode, ensuring privacy and security.
+- Random encryption keys and initialization vectors (IVs) are generated for each message, enhancing security.
+
+### Asynchronous Communication
+- Network communication with clients is handled asynchronously using Boost.Asio, allowing for non-blocking I/O operations.
+- Asynchronous message sending and receiving ensure efficient utilization of system resources and responsiveness.
+
+### Thread-Safe Message Queues
+- Message queues are implemented as thread-safe data structures, allowing multiple threads to access them concurrently without causing data corruption or race conditions.
+- Thread-safe queues ensure reliable message delivery and processing in multi-threaded environments.
+
+### Flexible Integration
+- The project's modular design allows for easy integration into existing applications.
+- Developers can customize and extend the functionality of the chat room network to meet their specific requirements.
 
 ## Usage
 

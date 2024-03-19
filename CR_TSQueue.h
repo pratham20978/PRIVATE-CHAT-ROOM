@@ -54,7 +54,9 @@ namespace olc
             // Clear Queue
             void clear(){
                 scoped_lock lock(muxQueue);
-                TSQ.clear();
+                while(!TSQ.empty()){
+                    TSQ.pop();
+                }
             }
         };
     }

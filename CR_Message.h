@@ -35,6 +35,8 @@ namespace olc
         
 
             public:
+            // Default constructor
+            Message(): Message_Header(""),body(""),encryptionKey(""),IV(""){}
             // constrictor
             Message (const string& userId, const string& msg): Message_Header(userId){
 
